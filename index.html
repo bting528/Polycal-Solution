@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBM & Polycal Mixing Calculator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .calculator-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 { color: #2c3e50; margin-top: 0; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #4a5568; }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        button:hover { background-color: #2563eb; }
+        .results-box {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-left: 4px solid #3b82f6;
+            border-radius: 4px;
+            display: none;
+        }
+        .results-title { font-weight: bold; color: #1e293b; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e2e8f0; }
+        th { color: #64748b; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>EBM & Polycal Mixer</h2>
+    
+    <div class="form-group">
+        <label for="milkType">Select Milk Base</label>
+        <select id="milkType">
+            <option value="plain">EBM (Plain)</option>
+            <option value="half">EBM + Half HMF</option>
+            <option value="full">EBM + Full HMF</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="milkVol">Milk Volume (mL)</label>
+        <input type="number" id="milkVol" placeholder="e.g., 90" min="0" step="any">
+    </div>
+
+    <div class="form-group">
+        <label for="polyVol">52% Polycal Solution Volume (mL)</label>
+        <input type="number" id="polyVol" placeholder="e.g., 10" min="0" step="any">
+    </div>
+
+    <button onclick="calculateMixture()">Calculate Nutrients</button>
+
+    <div id="results" class="results-box">
+        <div class="results-title" id="summaryText">Mixture Results</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nutrient</th>
+                    <th>Total in Mix</th>
+                    <th>Per 100 mL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Energy (kcal)</td><td id="t-kcal">-</td><td id="p-kcal">-</td></tr>
+                <tr><td>Protein (g)</td><td id="t-pro">-</td><td id="p-pro">-</td></tr>
+                <tr><td>Carbs (g)</td><td id="t-carb">-</td><td id="p-carb">-</td></tr>
+                <tr><td>Fat (g)</td><td id="t-fat">-</td><td id="p-fat">-</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Data per 100 mL
+    const nutritionDb = {
+        plain: { kcal: 67.0, pro: 1.20, carb: 7.00, fat: 3.50 },
+        half:  { kcal: 75.7, pro: 1.92, carb: 7.64, fat: 3.86 },
+        full:  { kcal: 84.4, pro: 2.64, carb: 8.28, fat: 4.22 },
+        polycal:{ kcal: 199.7, pro: 0.00, carb: 49.92, fat: 0.00 }
+    };
+
+    function calculateMixture() {
+        const type = document.getElementById('milkType').value;
+        const milkMl = parseFloat(document.getElementById('milkVol').value) || 0;
+        const polyMl = parseFloat(document.getElementById('polyVol').value) || 0;
+
+        const totalVol = milkMl + polyMl;
+        if (totalVol <= 0) {
+            alert("Please enter a valid volume greater than 0.");
+            return;
+        }
+
+        const milk = nutritionDb[type];
+        const poly = nutritionDb['polycal'];
+
+        // Total Nutrient Calculations
+        const tKcal = (milk.kcal * (milkMl/100)) + (poly.kcal * (polyMl/100));
+        const tPro  = (milk.pro * (milkMl/100)) + (poly.pro * (polyMl/100));
+        const tCarb = (milk.carb * (milkMl/100)) + (poly.carb * (polyMl/100));
+        const tFat  = (milk.fat * (milkMl/100)) + (poly.fat * (polyMl/100));
+
+        // Per 100 mL Density Calculations
+        const factor = 100 / totalVol;
+        const pKcal = tKcal * factor;
+        const pPro  = tPro * factor;
+        const pCarb = tCarb * factor;
+        const pFat  = tFat * factor;
+
+        // Update UI
+        document.getElementById('summaryText').innerText = `Mixture Results (${totalVol.toFixed(1)} mL Total)`;
+        document.getElementById('t-kcal').innerText = tKcal.toFixed(2);
+        document.getElementById('p-kcal').innerText = pKcal.toFixed(2);
+        document.getElementById('t-pro').innerText = tPro.toFixed(2);
+        document.getElementById('p-pro').innerText = pPro.toFixed(2);
+        document.getElementById('t-carb').innerText = tCarb.toFixed(2);
+        document.getElementById('p-carb').innerText = pCarb.toFixed(2);
+        document.getElementById('t-fat').innerText = tFat.toFixed(2);
+        document.getElementById('p-fat').innerText = pFat.toFixed(2);
+
+        document.getElementById('results').style.display = 'block';
+    }
+</script>
+</body>
+</html>
