@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neonatal Nutrition & GIR Calculator</title>
+    <title>Neonatal Nutrition Mixer (Polycal & Calogen)</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -22,13 +22,19 @@
             width: 100%;
         }
         h2 { color: #2c3e50; margin-top: 0; text-align: center; margin-bottom: 20px; }
+        h3 { color: #475569; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 5px; margin-top: 20px; margin-bottom: 15px; }
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #4a5568; font-size: 14px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #4a5568; font-size: 13px; }
         select, input {
             width: 100%;
             padding: 10px;
@@ -39,47 +45,46 @@
         }
         button {
             width: 100%;
-            background-color: #2563eb;
+            background-color: #0ea5e9;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 6px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
             transition: background 0.2s;
         }
-        button:hover { background-color: #1d4ed8; }
+        button:hover { background-color: #0284c7; }
         .results-box {
             margin-top: 25px;
             padding: 15px;
             background-color: #f8fafc;
-            border-left: 4px solid #2563eb;
+            border-left: 4px solid #0ea5e9;
             border-radius: 4px;
             display: none;
         }
         .results-title { font-weight: bold; color: #1e293b; margin-bottom: 12px; font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;}
         .metric-badge {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
             padding: 10px;
             border-radius: 6px;
             margin-bottom: 8px;
-            font-size: 15px;
-            color: #1e40af;
+            font-size: 14px;
+            color: #0369a1;
         }
-        .metric-badge font { font-weight: bold; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e2e8f0; }
-        th { color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        th { color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
         td { color: #334155; font-size: 15px; }
     </style>
 </head>
 <body>
 
 <div class="calculator-card">
-    <h2>EBM & Polycal Intake Calculator</h2>
+    <h2>EBM, Polycal & Calogen Mixer</h2>
     
     <div class="form-group">
         <label for="milkType">Select Milk Base</label>
@@ -90,41 +95,47 @@
         </select>
     </div>
 
-    <div class="grid-2">
+    <h3>1. Batch Recipe Formulation</h3>
+    <div class="grid-3">
         <div class="form-group">
-            <label for="milkVol">Milk Volume per Recipe (mL)</label>
-            <input type="number" id="milkVol" placeholder="e.g., 90" min="0" step="any">
+            <label for="milkVol">Milk Vol (mL)</label>
+            <input type="number" id="milkVol" placeholder="90" min="0" step="any">
         </div>
         <div class="form-group">
-            <label for="polyVol">52% Polycal Vol per Recipe (mL)</label>
-            <input type="number" id="polyVol" placeholder="e.g., 10" min="0" step="any">
+            <label for="polyVol">52% Polycal (mL)</label>
+            <input type="number" id="polyVol" placeholder="10" min="0" step="any">
+        </div>
+        <div class="form-group">
+            <label for="calogenVol">Calogen (mL)</label>
+            <input type="number" id="calogenVol" placeholder="0" min="0" step="any">
         </div>
     </div>
 
+    <h3>2. Infant Delivery & Metrics</h3>
     <div class="grid-2">
         <div class="form-group">
-            <label for="feedVol">Volume Given per Feed (mL)</label>
-            <input type="number" id="feedVol" placeholder="e.g., 15" min="0" step="any">
+            <label for="feedVol">Volume per Feed (mL)</label>
+            <input type="number" id="feedVol" placeholder="15" min="0" step="any">
         </div>
         <div class="form-group">
-            <label for="totalFeeds">Total Number of Feeds</label>
-            <input type="number" id="totalFeeds" placeholder="e.g., 8" min="0" step="any">
+            <label for="totalFeeds">Total Feeds (per day)</label>
+            <input type="number" id="totalFeeds" placeholder="8" min="0" step="any">
         </div>
     </div>
 
     <div class="form-group">
         <label for="weight">Patient Body Weight (kg)</label>
-        <input type="number" id="weight" placeholder="e.g., 2.5" min="0.1" step="any">
+        <input type="number" id="weight" placeholder="2.5" min="0.1" step="any">
     </div>
 
-    <button onclick="calculateNutrition()">Calculate Summary</button>
+    <button onclick="calculateNutrition()">Calculate Clinical Summary</button>
 
     <div id="results" class="results-box">
         <div class="results-title" id="summaryText">Total Intake Summary</div>
         
-        <div class="metric-badge">Carbohydrate Concentration: <span id="m-carb-pct">-</span>% (g/mL)</div>
-        <div class="metric-badge">Energy Density: <span id="m-kcal-oz">-</span> kcal/Oz</div>
-        <div class="metric-badge">Glucose Infusion Rate (GIR): <span id="m-gir">-</span> mg/kg/min</div>
+        <div class="metric-badge">Carbohydrate Concentration: <strong><span id="m-carb-pct">-</span>%</strong> (g/mL)</div>
+        <div class="metric-badge">Energy Density: <strong><span id="m-kcal-oz">-</span> kcal/Oz</strong></div>
+        <div class="metric-badge">Glucose Infusion Rate (GIR): <strong><span id="m-gir">-</span> mg/kg/min</strong></div>
 
         <table>
             <thead>
@@ -145,22 +156,26 @@
 </div>
 
 <script>
+    // Nutritional Database per 100 mL
     const nutritionDb = {
         plain: { kcal: 67.0, pro: 1.20, carb: 7.00, fat: 3.50 },
         half:  { kcal: 75.7, pro: 1.92, carb: 7.64, fat: 3.86 },
         full:  { kcal: 84.4, pro: 2.64, carb: 8.28, fat: 4.22 },
-        polycal:{ kcal: 199.7, pro: 0.00, carb: 49.92, fat: 0.00 }
+        polycal:{ kcal: 199.7, pro: 0.00, carb: 49.92, fat: 0.00 },
+        calogen:{ kcal: 450.0, pro: 0.00, carb: 0.00, fat: 50.00 }
     };
 
     function calculateNutrition() {
         const type = document.getElementById('milkType').value;
         const milkMl = parseFloat(document.getElementById('milkVol').value) || 0;
         const polyMl = parseFloat(document.getElementById('polyVol').value) || 0;
+        const calogenMl = parseFloat(document.getElementById('calogenVol').value) || 0;
+        
         const feedMl = parseFloat(document.getElementById('feedVol').value) || 0;
         const totalFeeds = parseFloat(document.getElementById('totalFeeds').value) || 0;
         const weight = parseFloat(document.getElementById('weight').value) || 0;
 
-        const recipeTotalVol = milkMl + polyMl;
+        const recipeTotalVol = milkMl + polyMl + calogenMl;
         const totalVolumeGiven = feedMl * totalFeeds;
 
         if (recipeTotalVol <= 0 || totalVolumeGiven <= 0 || weight <= 0) {
@@ -170,39 +185,40 @@
 
         const milk = nutritionDb[type];
         const poly = nutritionDb['polycal'];
+        const calogen = nutritionDb['calogen'];
 
-        // 1. Calculate nutrient profile per 1 mL of the prepared recipe mixture
-        const kcalPerMl = ((milk.kcal * (milkMl/100)) + (poly.kcal * (polyVol=polyMl/100))) / recipeTotalVol;
-        const proPerMl  = ((milk.pro * (milkMl/100)) + (poly.pro * (polyMl/100))) / recipeTotalVol;
-        const carbPerMl = ((milk.carb * (milkMl/100)) + (poly.carb * (polyMl/100))) / recipeTotalVol;
-        const fatPerMl  = ((milk.fat * (milkMl/100)) + (poly.fat * (polyMl/100))) / recipeTotalVol;
+        // 1. Calculate combined nutrient profile per 1 mL of total batch recipe
+        const kcalPerMl = ((milk.kcal * (milkMl/100)) + (poly.kcal * (polyMl/100)) + (calogen.kcal * (calogenMl/100))) / recipeTotalVol;
+        const proPerMl  = ((milk.pro * (milkMl/100)) + (poly.pro * (polyMl/100)) + (calogen.pro * (calogenMl/100))) / recipeTotalVol;
+        const carbPerMl = ((milk.carb * (milkMl/100)) + (poly.carb * (polyMl/100)) + (calogen.carb * (calogenMl/100))) / recipeTotalVol;
+        const fatPerMl  = ((milk.fat * (milkMl/100)) + (poly.fat * (polyMl/100)) + (calogen.fat * (calogenMl/100))) / recipeTotalVol;
 
-        // 2. Calculate actual total intake based on total volume delivered
+        // 2. Calculate actual absolute intakes based on final volume consumed
         const totalKcal = kcalPerMl * totalVolumeGiven;
         const totalPro  = proPerMl * totalVolumeGiven;
         const totalCarb = carbPerMl * totalVolumeGiven;
         const totalFat  = fatPerMl * totalVolumeGiven;
 
-        // 3. Compute derived clinical values
-        const carbPercent = carbPerMl * 100; // Grams of carb per ml * 100 = % (g/100mL)
-        const kcalPerOz = kcalPerMl * 29.5735; // 1 Fluid Ounce ≈ 29.5735 mL
+        // 3. Compute derived clinical indicators
+        const carbPercent = carbPerMl * 100; 
+        const kcalPerOz = kcalPerMl * 29.5735; 
         
-        // GIR formula: (grams of carb * 1000 mg) / (weight in kg * 1440 minutes in a day)
+        // GIR formula: (grams of carb * 1000 mg) / (weight in kg * 1440 minutes in 24h)
         const gir = (totalCarb * 1000) / (weight * 24 * 60);
 
-        // Update Text & Table UI
+        // Update UI
         document.getElementById('summaryText').innerText = `Total Intake Summary (${totalVolumeGiven.toFixed(1)} mL Given)`;
         document.getElementById('m-carb-pct').innerText = carbPercent.toFixed(2);
         document.getElementById('m-kcal-oz').innerText = kcalPerOz.toFixed(1);
         document.getElementById('m-gir').innerText = gir.toFixed(2);
 
-        // Total Intakes
+        // Populate Absolute Intake Column
         document.getElementById('t-kcal').innerText = totalKcal.toFixed(1) + " kcal";
         document.getElementById('t-pro').innerText = totalPro.toFixed(2) + " g";
         document.getElementById('t-carb').innerText = totalCarb.toFixed(2) + " g";
         document.getElementById('t-fat').innerText = totalFat.toFixed(2) + " g";
 
-        // Per kg Body Weight Intakes
+        // Populate Per-kg Normalized Column
         document.getElementById('p-kcal').innerText = (totalKcal / weight).toFixed(1) + " kcal/kg";
         document.getElementById('p-pro').innerText = (totalPro / weight).toFixed(2) + " g/kg";
         document.getElementById('p-carb').innerText = (totalCarb / weight).toFixed(2) + " g/kg";
